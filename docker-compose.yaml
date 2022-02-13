@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    image: hot-potato-discord:latest
+    ports:
+      - 8080:8080
+      - 9090:9090
+    env_file: ./.env
+    environment:
+      DATABASE_URL: postgres://hotpotato:hotpotato@postgres:5432/hotpotato?sslmode=disable
+      ADMIN_PORT: 9090
+      PORT: 8080
+
+  postgres:
+    image: postgres:14.2-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: hotpotato
+      POSTGRES_PASSWORD: hotpotato
+      POSTGRES_USER: hotpotato
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  postgres.init:
+    image: migrate/migrate:v4.15.1
+    entrypoint:
+      - wait-for
+      - postgres:5432
+      - --
+      - /run-migrations.sh
+    environment:
+      DATABASE_URL: postgres://hotpotato:hotpotato@postgres:5432/hotpotato?sslmode=disable
+    volumes:
+      - ./bin/wait-for:/usr/local/bin/wait-for
+      - ./db/migrations:/migrations
+      - ./db/run-migrations.sh:/run-migrations.sh

@@ -1,0 +1,8 @@
+version: "1"
+packages:
+  - path: "internal/room/store"
+    schema: "db/migrations"
+    queries: "db/queries/room.sql"
+  - path: "internal/game/store"
+    schema: "db/migrations"
+    queries: "db/queries/game.sql"

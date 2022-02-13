@@ -1,0 +1,8 @@
+# misc
+.env
+
+# compiled binaries
+main
+
+# local data
+data/
